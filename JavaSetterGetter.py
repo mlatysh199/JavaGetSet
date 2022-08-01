@@ -1,5 +1,7 @@
 import sublime, sublime_plugin
 import re
+import traceback
+
 
 DEBUG = False
 
@@ -43,7 +45,6 @@ def getSelections(view):
 
 class JavaSetterGetterCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-
         selections = getSelections(self.view)
         selection_matches = selections["selections"]
         properties = []
@@ -75,13 +76,13 @@ class JavaSetterGetterCommand(sublime_plugin.TextCommand):
             return
 
         try:
-            edit = self.view.begin_edit('java_setter_getter')
             properties_text = "\n" + "\n".join(getter_arr) + "\n" + "\n".join(setter_arr)
             insert_count = self.view.insert(edit, insert_position, properties_text)
             self.view.sel().clear()
             self.view.sel().add(sublime.Region(insert_position, (insert_position + insert_count)))
-        except Exception, ex:
+        except Exception as ex:
             if DEBUG:
-                print ex
+                traceback.print_exc()
+                print(ex)
         finally:
-            self.view.end_edit(edit)
+            pass
